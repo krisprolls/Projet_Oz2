@@ -6,10 +6,10 @@ export
    StartGame
 define
    [QTk]={Module.link ["x-oz://system/wp/QTk.ozf"]}
-
    Canvas
    MainURL={OS.getCWD}
    PacManImg={QTk.newImage photo(url:MainURL#"/pacman.gif")}
+   GhostImgBlue={QTk.newImage photo(url:MainURL#"/blue.gif")}
    WidthCell=40
    HeightCell=40
    NW=20
@@ -21,15 +21,17 @@ define
    Desc=td(canvas(bg:black
                   width:W
                   height:H
-                  handle:Canvas))
+		  handle:Canvas))
    Window={QTk.build Desc}
    {Window bind(event:"<Up>" action:proc{$} {Send CommandPort r(0 ~1)} end)}
    {Window bind(event:"<Left>" action:proc{$} {Send CommandPort r(~1 0)} end)}
    {Window bind(event:"<Down>" action:proc{$} {Send CommandPort r(0 1)}  end)}
    {Window bind(event:"<Right>" action:proc{$} {Send CommandPort r(1 0)} end)}
+   %%% Ici qu'il faut placer les skins des fantomes? Genre case Color of ghost %%%
    proc{DrawBox Color X Y}
       case Color of white then
 	 {Canvas create(image X*WidthCell+WidthCell div 2 Y*HeightCell+HeightCell div 2 image:PacManImg)}
+      [] blueGhost then {Canvas create(image X*WidthCell+WidthCell div 2 Y*HeightCell+HeightCell div 2 image:GhostImgBlue)}
       else
 	 {Canvas create(rect X*WidthCell Y*HeightCell X*WidthCell+WidthCell Y*HeightCell+HeightCell fill:Color outline:black)}
       end
@@ -116,7 +118,7 @@ define
       %{Browse aftershow}
       %Initialize ghosts and user
       MySelf = r(white 8 8)
-      Ghosts = [r(yellow 1 12) r(blue 10 3) r(green 11 10)]
+      Ghosts = [r(blueGhost 1 12) r(blueGhost 11 10) r(blueGhost 4 5)]
       {InitLayout MySelf|Ghosts}
       {Game MySelf Ghosts Command}
    end
